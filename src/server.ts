@@ -1,19 +1,27 @@
 import Fastify from "fastify";
 import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
-import { createProductSchema } from "./schemas/product.schema.js";
+import {
+  createProductSchema,
+  productParamsSchema,
+  productQuerySchema,
+} from "./schemas/product.schema.js";
 
 const app = Fastify({
   logger: true,
 }).withTypeProvider<TypeBoxTypeProvider>();
 
-interface ProductParams {
-  id: string;
-}
-
-app.get<{ Params: ProductParams }>("/products/:id", (request, reply) => {
-  const { id } = request.params;
-  return reply.code(200).send({ productId: id });
-});
+app.get(
+  "/products/:id",
+  {
+    schema: {
+      params: productParamsSchema,
+    },
+  },
+  (request, reply) => {
+    const { id } = request.params;
+    return reply.code(200).send({ productId: id });
+  },
+);
 
 app.post("/products", {
   schema: {
@@ -32,15 +40,19 @@ app.post("/products", {
   },
 });
 
-interface ProductQuery {
-  category?: string;
-}
+app.get(
+  "/products",
+  {
+    schema: {
+      querystring: productQuerySchema,
+    },
+  },
+  (request, reply) => {
+    const { category } = request.query;
 
-app.get<{ Querystring: ProductQuery }>("/products", (request, reply) => {
-  const { category } = request.query;
-
-  return reply.code(200).send({ category: category ?? "all" });
-});
+    return reply.code(200).send({ category: category ?? "all" });
+  },
+);
 
 app.get("/health", (request, reply) => {
   return reply.code(200).send({ status: "ok" });
