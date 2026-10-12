@@ -1,8 +1,10 @@
 import Fastify from "fastify";
+import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import { createProductSchema } from "./schemas/product.schema.js";
 
 const app = Fastify({
   logger: true,
-});
+}).withTypeProvider<TypeBoxTypeProvider>();
 
 interface ProductParams {
   id: string;
@@ -11,6 +13,23 @@ interface ProductParams {
 app.get<{ Params: ProductParams }>("/products/:id", (request, reply) => {
   const { id } = request.params;
   return reply.code(200).send({ productId: id });
+});
+
+app.post("/products", {
+  schema: {
+    body: createProductSchema,
+  },
+  handler(request, reply) {
+    const { name, price, available } = request.body;
+
+    return reply.code(201).send({
+      product: {
+        name,
+        price,
+        available,
+      },
+    });
+  },
 });
 
 interface ProductQuery {
