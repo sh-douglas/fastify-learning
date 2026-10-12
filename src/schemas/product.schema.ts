@@ -6,4 +6,12 @@ const createProductSchema = Type.Object({
   available: Type.Optional(Type.Boolean()),
 });
 
-export { createProductSchema };
+const productParamsSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+});
+
+const productQuerySchema = Type.Object({
+  category: Type.Optional(Type.String({ minLength: 3 })),
+});
+
+export { createProductSchema, productParamsSchema, productQuerySchema };
