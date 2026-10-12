@@ -1,15 +1,6 @@
-import Fastify from "fastify";
-import { productsRoutes } from "./modules/products/products.routes.js";
+import { buildApp } from "./app.js";
 
-const app = Fastify({
-  logger: true,
-});
-
-app.register(productsRoutes, { prefix: "/products" });
-
-app.get("/health", (request, reply) => {
-  return reply.code(200).send({ status: "ok" });
-});
+const app = buildApp();
 
 async function start() {
   try {
