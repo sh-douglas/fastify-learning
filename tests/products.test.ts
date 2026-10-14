@@ -55,3 +55,21 @@ test("GET /products/protected returns 200 with API key", async () => {
     await app.close();
   }
 });
+
+test("GET /products?category=archived return 409", async () => {
+  const app = buildApp();
+
+  try {
+    const response = await app.inject({
+      method: "GET",
+      url: "/products?category=archived",
+    });
+
+    assert.strictEqual(response.statusCode, 409);
+    assert.deepStrictEqual(response.json(), {
+      message: "Category is unavailable",
+    });
+  } finally {
+    await app.close();
+  }
+});

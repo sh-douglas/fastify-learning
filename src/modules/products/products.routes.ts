@@ -5,6 +5,7 @@ import {
   productQuerySchema,
 } from "../../schemas/product.schema.js";
 import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import { listProducts } from "./products.controller.js";
 
 const productsRoutes: FastifyPluginAsync = async (fastify) => {
   const app = fastify.withTypeProvider<TypeBoxTypeProvider>();
@@ -43,19 +44,12 @@ const productsRoutes: FastifyPluginAsync = async (fastify) => {
     },
   );
 
-  app.get(
-    "/",
-    {
-      schema: {
-        querystring: productQuerySchema,
-      },
+  app.get("/", {
+    schema: {
+      querystring: productQuerySchema,
     },
-    (request, reply) => {
-      const { category } = request.query;
-
-      return reply.code(200).send({ category: category ?? "all" });
-    },
-  );
+    handler: listProducts,
+  });
 
   app.post("/", {
     schema: {
