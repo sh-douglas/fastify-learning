@@ -23,9 +23,7 @@ test("getProductCategory return error when category is archived", () => {
     (error) => {
       assert.ok(error instanceof AppError);
       assert.strictEqual(error.message, "Category is unavailable");
-      assert.strictEqual(error.statusCode, {
-        message: "Category is unavailable",
-      });
+      assert.strictEqual(error.statusCode, 409);
 
       return true;
     },
