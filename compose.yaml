@@ -1,0 +1,28 @@
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: fastify-learning-db
+    environment:
+      POSTGRES_USER: fastify
+      POSTGRES_PASSWORD: fastify_dev
+      POSTGRES_DB: fastify_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fastify -d fastify_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+    volumes:
+      - fastify_learning_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: fastify-learning-api
+    ports:
+      - "5000:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  fastify_learning_data:
