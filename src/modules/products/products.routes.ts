@@ -5,7 +5,11 @@ import {
   productQuerySchema,
 } from "../../schemas/product.schema.js";
 import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
-import { listProducts } from "./products.controller.js";
+import {
+  createProductController,
+  listProducts,
+  listStoredProducts,
+} from "./products.controller.js";
 
 const productsRoutes: FastifyPluginAsync = async (fastify) => {
   const app = fastify.withTypeProvider<TypeBoxTypeProvider>();
@@ -55,18 +59,10 @@ const productsRoutes: FastifyPluginAsync = async (fastify) => {
     schema: {
       body: createProductSchema,
     },
-    handler(request, reply) {
-      const { name, price, available } = request.body;
-
-      return reply.code(201).send({
-        product: {
-          name,
-          price,
-          available,
-        },
-      });
-    },
+    handler: createProductController,
   });
+
+  app.get("/stored", listStoredProducts);
 };
 
 export { productsRoutes };

@@ -11,7 +11,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-
+    ports:
+      - "127.0.0.1:5540:5432"
     volumes:
       - fastify_learning_data:/var/lib/postgresql/data
 
@@ -20,6 +21,8 @@ services:
     container_name: fastify-learning-api
     ports:
       - "5000:3000"
+    environment:
+      DATABASE_URL: "postgresql://fastify:fastify_dev@database:5432/fastify_db"
     depends_on:
       database:
         condition: service_healthy

@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import { productsRoutes } from "./modules/products/products.routes.js";
 import AppError from "./shared/errors/app-error.js";
+import prismaPlugin from "./plugins/prisma.plugin.js";
 
 function buildApp() {
   const app = Fastify({
@@ -26,7 +27,7 @@ function buildApp() {
       message: "Internal server error.",
     });
   });
-
+  app.register(prismaPlugin);
   app.register(productsRoutes, { prefix: "/products" });
 
   app.get("/health", (request, reply) => {
