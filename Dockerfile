@@ -9,6 +9,10 @@ RUN npm ci
 COPY src ./src
 COPY tsconfig.json ./
 
+COPY prisma ./prisma
+COPY prisma.config.ts ./
+
+RUN npx prisma generate
 RUN npm run build
 
 FROM node:22-alpine AS production
